@@ -20,7 +20,18 @@
     <button onclick="walkDog()">散歩する</button>
     <button onclick="sleepDog()">寝る</button>
 
+    <button onclick="food += 10; updataDisplay()">+ご飯</button>
+    <button onclick="food -= 10; updataDisplay()">-ご飯</button>
+    <button onclick="water += 10; updataDisplay()">+水</button>
+    <button onclick="water -= 10; updataDisplay()">-水</button>
+    <button onclick="energy += 10; updataDisplay()">+元気</button>
+    <button onclick="energy -= 10; updataDisplay()">-元気</button>
+    <button onclick="sleepiness += 10; updataDisplay()">+ねむけ</button>
+    <button onclick="sleepiness -= 10; updataDisplay()">-ねむけ</button>
+
     <script>
+        updataDisplay();
+
         let food = localStorage.getItem("food");
         let water = localStorage.getItem("water");
         let energy = localStorage.getItem("energy");
@@ -61,6 +72,7 @@
             document.getElementById("water").textContent = water;
             document.getElementById("energy").textContent = energy;
             document.getElementById("sleepiness").textContent = sleepiness;
+            document.getElementById("mood").textContent = getMood();
         }
 
         function saveData() {
@@ -72,13 +84,9 @@
 
         function updataMood() {
             food = Math.max(food - 1, 0);
-            food = Math.min(food + 1, 100);
             water = Math.max(water - 1, 0);
-            water = Math.min(water + 1, 100);
             energy = Math.max(energy - 1, 0);
-            energy = Math.min(energy + 1, 100);
-            sleepiness = Math.max(sleepiness - 1, 0);
-            sleepiness = Math.min(sleepiness + 1, 100);
+            sleepiness = Math.max(sleepiness + 1, 100);
         }
 
         function feedDog() {
@@ -111,6 +119,18 @@
             saveData();
         }
 
+
+        function clampStats() {
+            food = Math.max(food, 0);
+            water = Math.max(water, 0);
+            energy = Math.max(energy, 0);
+            sleepiness = Math.max(sleepiness, 0);
+
+            food = Math.min(food, 100);
+            water = Math.min(water, 100);
+            energy = Math.min(energy, 100);
+            sleepiness = Math.min(sleepiness, 100);
+        }
 
         function getMood() {
             // 特殊状態
