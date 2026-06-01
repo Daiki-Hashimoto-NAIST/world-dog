@@ -148,11 +148,6 @@
 
         function getMood() {
             // 特殊状態
-            if (food < 10) return "🤤"
-            if (water < 10) return "🥵"
-            if (energy < 10) return "😑"
-            if (sleepiness > 90) return " 😴"
-
             if (
                 food === 100 &&
                 water === 100 &&
@@ -171,6 +166,11 @@
                 water > 90 &&
                 energy < 10
             ) return "🍖"
+
+            if (food < 10) return "🤤"
+            if (water < 10) return "🥵"
+            if (energy < 10) return "😑"
+            if (sleepiness > 90) return "😴"
 
             // 総合評価
             let moodScore =
