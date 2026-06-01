@@ -9,12 +9,21 @@
 <body>
     <h1>🐶 いぬ</h1>
 
-    <p>満腹度：<span id="food">50</span></p>
+    <p>ごはん：<span id="food">50</span></p>
+    <p>みず：<span id="water">50</span></p>
+    <p>げんき：<span id="energy">100</span></p>
+    <p>ねむけ：<span id="sleepiness">50</span></p>
 
-    <button onclick="feelDog()">犬に餌をあげる</button>
+    <button onclick="feedDog()">ごはんをあげる</button>
+    <button onclick="waterDog()">水をあげる</button>
+    <button onclick="walkDog()">散歩する</button>
+    <button onclick="sleepDog()">寝る</button>
 
     <script>
         let food = localStorage.getItem("food");
+        let water = localStorage.getItem("water");
+        let energy = localStorage.getItem("energy");
+        let sleepiness = localStorage.getItem("sleepiness");
 
         if (food === null) {
             food = 50;
@@ -22,14 +31,83 @@
             food = Number(food);
         }
 
-        document.getElementById("food").textContent = food;
+        if (water === null) {
+            water = 50;
+        } else {
+            water = Number(water);
+        }
 
-        function feelDog() {
+        if (energy === null) {
+            energy = 100;
+        } else {
+            energy = Number(energy);
+        }
+
+        if (sleepiness === null) {
+            sleepiness = 50;
+        } else {
+            sleepiness = Number(sleepiness);
+        }
+
+        document.getElementById("food").textContent = food;
+        document.getElementById("water").textContent = water;
+        document.getElementById("energy").textContent = energy;
+        document.getElementById("sleepiness").textContent = sleepiness;
+
+        function feedDog() {
             food += 10;
             document.getElementById("food").textContent = food;
 
             localStorage.setItem("food", food);
         }
+
+        setInterval(() => {
+            food = Math.max(food - 1, 0);
+
+            document.getElementById("food").textContent = food;
+            localStorage.setItem("food", food);
+        }, 10000);
+
+
+        function waterDog() {
+            water += 10;
+            document.getElementById("water").textContent = water;
+
+            localStorage.setItem("water", water);
+        }
+
+        setInterval(() => {
+            water = Math.max(water - 1, 0);
+            document.getElementById("water").textContent = water;
+            localStorage.setItem("water", water);
+        }, 10000);
+
+        function walkDog() {
+            energy -= 10;
+            document.getElementById("energy").textContent = energy;
+
+            localStorage.setItem("energy", energy);
+        }
+
+        setInterval(() => {
+            energy = Math.min(energy + 1, 100);
+            document.getElementById("energy").textContent = energy;
+            localStorage.setItem("energy", energy);
+        }, 10000);
+
+        function sleepDog() {
+            sleepiness -= 20;
+            document.getElementById("sleepiness").textContent = sleepiness;
+
+            localStorage.setItem("sleepiness", sleepiness);
+        }
+
+        setInterval(() => {
+            sleepiness = Math.min(sleepiness + 1, 100);
+            document.getElementById("sleepiness").textContent = sleepiness;
+            localStorage.setItem("sleepiness", sleepiness);
+        }, 10000);
+
     </script>
 </body>
 
