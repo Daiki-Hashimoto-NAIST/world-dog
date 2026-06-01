@@ -22,14 +22,14 @@
         <button onclick="sleepDog()">寝る</button>
     </div>
     <div class="debug-buttons">
-        <button onclick="food += 10; updataDisplay()">+ご飯</button>
-        <button onclick="food -= 10; updataDisplay()">-ご飯</button>
-        <button onclick="water += 10; updataDisplay()">+水</button>
-        <button onclick="water -= 10; updataDisplay()">-水</button>
-        <button onclick="energy += 10; updataDisplay()">+元気</button>
-        <button onclick="energy -= 10; updataDisplay()">-元気</button>
-        <button onclick="sleepiness += 10; updataDisplay()">+ねむけ</button>
-        <button onclick="sleepiness -= 10; updataDisplay()">-ねむけ</button>
+        <button onclick="debugChange('food', 10)">+ご飯</button>
+        <button onclick="debugChange('food', -10)">-ご飯</button>
+        <button onclick="debugChange('water', 10)">+水</button>
+        <button onclick="debugChange('water', -10)">-水</button>
+        <button onclick="debugChange('energy', 10)">+元気</button>
+        <button onclick="debugChange('energy', -10)">-元気</button>
+        <button onclick="debugChange('sleepiness', 10)">+ねむけ</button>
+        <button onclick="debugChange('sleepiness', -10)">-ねむけ</button>
     </div>
 
     <style>
@@ -45,145 +45,147 @@
     </style>
 
     <script>
-        let food = localStorage.getItem("food");
-        let water = localStorage.getItem("water");
-        let energy = localStorage.getItem("energy");
-        let sleepiness = localStorage.getItem("sleepiness");
-
-        if (food === null) {
-            food = 50;
-        } else {
-            food = Number(food);
+        let dog = {
+            food: localStorage.getItem("food"),
+            water: localStorage.getItem("water"),
+            energy: localStorage.getItem("energy"),
+            sleepiness: localStorage.getItem("sleepiness"),
         }
 
-        if (water === null) {
-            water = 50;
-        } else {
-            water = Number(water);
+        function debugChange(stat, amount) {
+            dog[stat] = Math.min(100, Math.ceil(dog[stat] / 10) * 10 + amount);
+            updataAll();
         }
 
-        if (energy === null) {
-            energy = 100;
+        if (dog.food === null) {
+            dog.food = 50;
         } else {
-            energy = Number(energy);
+            dog.food = Number(dog.food);
         }
 
-        if (sleepiness === null) {
-            sleepiness = 50;
+        if (dog.water === null) {
+            dog.water = 50;
         } else {
-            sleepiness = Number(sleepiness);
+            dog.water = Number(dog.water);
         }
 
-        document.getElementById("food").textContent = food;
-        document.getElementById("water").textContent = water;
-        document.getElementById("energy").textContent = energy;
-        document.getElementById("sleepiness").textContent = sleepiness;
+        if (dog.energy === null) {
+            dog.energy = 100;
+        } else {
+            dog.energy = Number(dog.energy);
+        }
+
+        if (dog.sleepiness === null) {
+            dog.sleepiness = 50;
+        } else {
+            dog.sleepiness = Number(dog.sleepiness);
+        }
+
+        updataAll();
 
 
         function updataDisplay() {
-            document.getElementById("food").textContent = food;
-            document.getElementById("water").textContent = water;
-            document.getElementById("energy").textContent = energy;
-            document.getElementById("sleepiness").textContent = sleepiness;
+            document.getElementById("food").textContent = dog.food;
+            document.getElementById("water").textContent = dog.water;
+            document.getElementById("energy").textContent = dog.energy;
+            document.getElementById("sleepiness").textContent = dog.sleepiness;
             document.getElementById("mood").textContent = getMood();
         }
 
         function saveData() {
-            localStorage.setItem("food", food);
-            localStorage.setItem("water", water);
-            localStorage.setItem("energy", energy);
-            localStorage.setItem("sleepiness", sleepiness);
+            localStorage.setItem("food", dog.food);
+            localStorage.setItem("water", dog.water);
+            localStorage.setItem("energy", dog.energy);
+            localStorage.setItem("sleepiness", dog.sleepiness);
         }
 
-        function updataMood() {
-            food = Math.max(food - 1, 0);
-            water = Math.max(water - 1, 0);
-            energy = Math.max(energy - 1, 0);
-            sleepiness = Math.min(sleepiness + 1, 100);
+        function updataAll() {
             clampStats();
+            updataDisplay();
+            saveData();
+        }
+
+        function updataStats() {
+            dog.food = Math.max(dog.food - 1, 0);
+            dog.water = Math.max(dog.water - 1, 0);
+            dog.energy = Math.max(dog.energy - 1, 0);
+            dog.sleepiness = Math.min(dog.sleepiness + 1, 100);
         }
 
         function feedDog() {
-            food += 10;
-            updataDisplay();
-            saveData();
+            modifyStats({ food: 10 });
         }
 
         function waterDog() {
-            water += 10;
-            updataDisplay();
-            saveData();
+            modifyStats({ water: 10 });
         }
 
         function walkDog() {
-            energy -= 10;
-            food -= 10;
-            water -= 5;
-            sleepiness += 10;
-            updataDisplay();
-            saveData();
+            modifyStats({ energy: -10, food: -10, water: -5, sleepiness: 10 });
         }
 
         function sleepDog() {
-            sleepiness -= 20;
-            energy += 20;
-            food -= 10;
-            water -= 5;
-            updataDisplay();
-            saveData();
+            modifyStats({ sleepiness: -20, energy: 20, food: -10, water: -5 });
         }
 
-
         function clampStats() {
-            food = Math.max(food, 0);
-            water = Math.max(water, 0);
-            energy = Math.max(energy, 0);
-            sleepiness = Math.max(sleepiness, 0);
+            dog.food = Math.max(dog.food, 0);
+            dog.water = Math.max(dog.water, 0);
+            dog.energy = Math.max(dog.energy, 0);
+            dog.sleepiness = Math.max(dog.sleepiness, 0);
 
-            food = Math.min(food, 100);
-            water = Math.min(water, 100);
-            energy = Math.min(energy, 100);
-            sleepiness = Math.min(sleepiness, 100);
+            dog.food = Math.min(dog.food, 100);
+            dog.water = Math.min(dog.water, 100);
+            dog.energy = Math.min(dog.energy, 100);
+            dog.sleepiness = Math.min(dog.sleepiness, 100);
+        }
+
+        function modifyStats(changes) {
+            dog.food += changes.food || 0;
+            dog.water += changes.water || 0;
+            dog.energy += changes.energy || 0;
+            dog.sleepiness += changes.sleepiness || 0;
+            updataAll();
         }
 
         function getMood() {
             // 特殊状態
             if (
-                food === 100 &&
-                water === 100 &&
-                energy === 100 &&
-                sleepiness === 0
+                dog.food === 100 &&
+                dog.water === 100 &&
+                dog.energy === 100 &&
+                dog.sleepiness === 0
             ) return "🤩"
 
             if (
-                food === 0 &&
-                water === 0 &&
-                energy === 0
+                dog.food === 0 &&
+                dog.water === 0 &&
+                dog.energy === 0
             ) return "😇"
 
             if (
-                food > 90 &&
-                water > 90 &&
-                energy < 10
+                dog.food > 90 &&
+                dog.water > 90 &&
+                dog.energy < 10
             ) return "🍖"
 
-            if (food < 10) return "🤤"
-            if (water < 10) return "🥵"
-            if (energy < 10) return "😑"
-            if (sleepiness > 90) return "😴"
+            if (dog.food < 10) return "🤤"
+            if (dog.water < 10) return "🥵"
+            if (dog.energy < 10) return "😑"
+            if (dog.sleepiness > 90) return "😴"
 
             // 総合評価
             let moodScore =
-                food * 1.5 +
-                water * 1.5 +
-                energy * 1.0 +
-                (100 - sleepiness) * 0.8;
+                dog.food * 1.5 +
+                dog.water * 1.5 +
+                dog.energy * 1.0 +
+                (100 - dog.sleepiness) * 0.8;
 
             moodScore += Math.min(
-                food,
-                water,
-                energy,
-                (100 - sleepiness)
+                dog.food,
+                dog.water,
+                dog.energy,
+                (100 - dog.sleepiness)
             );
 
             if (moodScore < 48) return "😩";
@@ -200,7 +202,7 @@
         updataDisplay()
 
         setInterval(() => {
-            updataMood()
+            updataStats()
             updataDisplay()
             saveData()
         }, 10000);
