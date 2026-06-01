@@ -14,10 +14,21 @@
     <button onclick="feelDog()">犬に餌をあげる</button>
 
     <script>
-        let food = 50;
+        let food = localStorage.getItem("food");
+
+        if (food === null) {
+            food = 50;
+        } else {
+            food = Number(food);
+        }
+
+        document.getElementById("food").textContent = food;
+
         function feelDog() {
             food += 10;
-            document.getElementById("food").innerHTML = food;
+            document.getElementById("food").textContent = food;
+
+            localStorage.setItem("food", food);
         }
     </script>
 </body>
