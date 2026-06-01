@@ -15,23 +15,36 @@
     <p>げんき：<span id="energy">100</span></p>
     <p>ねむけ：<span id="sleepiness">50</span></p>
 
-    <button onclick="feedDog()">ごはんをあげる</button>
-    <button onclick="waterDog()">水をあげる</button>
-    <button onclick="walkDog()">散歩する</button>
-    <button onclick="sleepDog()">寝る</button>
+    <div class="action-buttons">
+        <button onclick="feedDog()">ごはんをあげる</button>
+        <button onclick="waterDog()">水をあげる</button>
+        <button onclick="walkDog()">散歩する</button>
+        <button onclick="sleepDog()">寝る</button>
+    </div>
+    <div class="debug-buttons">
+        <button onclick="food += 10; updataDisplay()">+ご飯</button>
+        <button onclick="food -= 10; updataDisplay()">-ご飯</button>
+        <button onclick="water += 10; updataDisplay()">+水</button>
+        <button onclick="water -= 10; updataDisplay()">-水</button>
+        <button onclick="energy += 10; updataDisplay()">+元気</button>
+        <button onclick="energy -= 10; updataDisplay()">-元気</button>
+        <button onclick="sleepiness += 10; updataDisplay()">+ねむけ</button>
+        <button onclick="sleepiness -= 10; updataDisplay()">-ねむけ</button>
+    </div>
 
-    <button onclick="food += 10; updataDisplay()">+ご飯</button>
-    <button onclick="food -= 10; updataDisplay()">-ご飯</button>
-    <button onclick="water += 10; updataDisplay()">+水</button>
-    <button onclick="water -= 10; updataDisplay()">-水</button>
-    <button onclick="energy += 10; updataDisplay()">+元気</button>
-    <button onclick="energy -= 10; updataDisplay()">-元気</button>
-    <button onclick="sleepiness += 10; updataDisplay()">+ねむけ</button>
-    <button onclick="sleepiness -= 10; updataDisplay()">-ねむけ</button>
+    <style>
+        .action-buttons button {
+            margin: 10px;
+            padding: 10px;
+        }
+
+        .debug-buttons button {
+            margin: 5px;
+            padding: 5px;
+        }
+    </style>
 
     <script>
-        updataDisplay();
-
         let food = localStorage.getItem("food");
         let water = localStorage.getItem("water");
         let energy = localStorage.getItem("energy");
@@ -86,7 +99,8 @@
             food = Math.max(food - 1, 0);
             water = Math.max(water - 1, 0);
             energy = Math.max(energy - 1, 0);
-            sleepiness = Math.max(sleepiness + 1, 100);
+            sleepiness = Math.min(sleepiness + 1, 100);
+            clampStats();
         }
 
         function feedDog() {
@@ -182,6 +196,8 @@
             if (moodScore < 384) return "😁";
             return "😆";
         }
+
+        updataDisplay()
 
         setInterval(() => {
             updataMood()
