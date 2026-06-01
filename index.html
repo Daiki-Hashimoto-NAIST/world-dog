@@ -8,6 +8,7 @@
 
 <body>
     <h1>🐶 いぬ</h1>
+    <h2 id="mood">😄</h2>
 
     <p>ごはん：<span id="food">50</span></p>
     <p>みず：<span id="water">50</span></p>
@@ -54,58 +55,118 @@
         document.getElementById("energy").textContent = energy;
         document.getElementById("sleepiness").textContent = sleepiness;
 
-        function feedDog() {
-            food += 10;
-            document.getElementById("food").textContent = food;
 
-            localStorage.setItem("food", food);
+        function updataDisplay() {
+            document.getElementById("food").textContent = food;
+            document.getElementById("water").textContent = water;
+            document.getElementById("energy").textContent = energy;
+            document.getElementById("sleepiness").textContent = sleepiness;
         }
 
-        setInterval(() => {
-            food = Math.max(food - 1, 0);
-
-            document.getElementById("food").textContent = food;
+        function saveData() {
             localStorage.setItem("food", food);
-        }, 10000);
+            localStorage.setItem("water", water);
+            localStorage.setItem("energy", energy);
+            localStorage.setItem("sleepiness", sleepiness);
+        }
 
+        function updataMood() {
+            food = Math.max(food - 1, 0);
+            food = Math.min(food + 1, 100);
+            water = Math.max(water - 1, 0);
+            water = Math.min(water + 1, 100);
+            energy = Math.max(energy - 1, 0);
+            energy = Math.min(energy + 1, 100);
+            sleepiness = Math.max(sleepiness - 1, 0);
+            sleepiness = Math.min(sleepiness + 1, 100);
+        }
+
+        function feedDog() {
+            food += 10;
+            updataDisplay();
+            saveData();
+        }
 
         function waterDog() {
             water += 10;
-            document.getElementById("water").textContent = water;
-
-            localStorage.setItem("water", water);
+            updataDisplay();
+            saveData();
         }
-
-        setInterval(() => {
-            water = Math.max(water - 1, 0);
-            document.getElementById("water").textContent = water;
-            localStorage.setItem("water", water);
-        }, 10000);
 
         function walkDog() {
             energy -= 10;
-            document.getElementById("energy").textContent = energy;
-
-            localStorage.setItem("energy", energy);
+            food -= 10;
+            water -= 5;
+            sleepiness += 10;
+            updataDisplay();
+            saveData();
         }
-
-        setInterval(() => {
-            energy = Math.min(energy + 1, 100);
-            document.getElementById("energy").textContent = energy;
-            localStorage.setItem("energy", energy);
-        }, 10000);
 
         function sleepDog() {
             sleepiness -= 20;
-            document.getElementById("sleepiness").textContent = sleepiness;
+            energy += 20;
+            food -= 10;
+            water -= 5;
+            updataDisplay();
+            saveData();
+        }
 
-            localStorage.setItem("sleepiness", sleepiness);
+
+        function getMood() {
+            // 特殊状態
+            if (food < 10) return "🤤"
+            if (water < 10) return "🥵"
+            if (energy < 10) return "😑"
+            if (sleepiness > 90) return " 😴"
+
+            if (
+                food === 100 &&
+                water === 100 &&
+                energy === 100 &&
+                sleepiness === 0
+            ) return "🤩"
+
+            if (
+                food === 0 &&
+                water === 0 &&
+                energy === 0
+            ) return "😇"
+
+            if (
+                food > 90 &&
+                water > 90 &&
+                energy < 10
+            ) return "🍖"
+
+            // 総合評価
+            let moodScore =
+                food * 1.5 +
+                water * 1.5 +
+                energy * 1.0 +
+                (100 - sleepiness) * 0.8;
+
+            moodScore += Math.min(
+                food,
+                water,
+                energy,
+                (100 - sleepiness)
+            );
+
+            if (moodScore < 48) return "😩";
+            if (moodScore < 96) return "😔";
+            if (moodScore < 144) return "🙁";
+            if (moodScore < 192) return "😐";
+            if (moodScore < 240) return "🙂";
+            if (moodScore < 288) return "😊";
+            if (moodScore < 336) return "😄";
+            if (moodScore < 384) return "😁";
+            return "😆";
         }
 
         setInterval(() => {
-            sleepiness = Math.min(sleepiness + 1, 100);
-            document.getElementById("sleepiness").textContent = sleepiness;
-            localStorage.setItem("sleepiness", sleepiness);
+            updataMood()
+            updataDisplay()
+            saveData()
         }, 10000);
 
     </script>
