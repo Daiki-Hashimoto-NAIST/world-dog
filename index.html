@@ -8,6 +8,18 @@
 
 <body>
     <h1>🐶 いぬ</h1>
+
+    <p>満腹度：<span id="food">50</span></p>
+
+    <button oneclick+"feelDog()">犬に餌をあげる</button>
+
+    <script>
+        let food = 50;
+        function feelDog() {
+            food += 10;
+            document.getElementById("food").innerHTML = food;
+        }
+    </script>
 </body>
 
 </html>
